@@ -8,8 +8,8 @@ const settings = {
 		speed: 6
 	}, 
 	ball: {
-		speed: 7,
-		color: 'rgb(0, 204, 255)'
+		color: 'rgb(0, 204, 255)',
+		speed: 7
 	}
 };
 
