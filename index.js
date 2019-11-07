@@ -41,7 +41,7 @@ function createBall() {
 
 function createPlayers() {
 	players = [];
-	for(let i = 0; i < 2; i++) {
+	for (let i = 0; i < 2; i++) {
 		players.push(new Player());
   }
 	
@@ -50,20 +50,20 @@ function createPlayers() {
 
 function startMappingPressedKeys() {
 	document.addEventListener('keydown', (event) => {
-		if(event.code === 'ArrowDown') {
+		if (event.code === 'ArrowDown') {
 			players[1].direction = 1;
 		}
 		
-		if(event.code === 'ArrowUp') {
+		if (event.code === 'ArrowUp') {
 			players[1].direction = -1;
 		}
 		
 		
-		if(event.code === 'KeyS') {
+		if (event.code === 'KeyS') {
 			players[0].direction = 1;
 		}
 		
-		if(event.code === 'KeyW') {
+		if (event.code === 'KeyW') {
 			players[0].direction = -1;
 		}
 	});
@@ -71,12 +71,11 @@ function startMappingPressedKeys() {
 
 function startMappingReleasedKeys() {
 	document.addEventListener('keyup', (event) => {
-
-		if(event.code === 'ArrowDown' || event.code === 'ArrowUp') {
+		if (event.code === 'ArrowDown' || event.code === 'ArrowUp') {
 			players[1].direction = 0;
 		}
 		
-		if(event.code === 'KeyS' || event.code === 'KeyW') {
+		if (event.code === 'KeyS' || event.code === 'KeyW') {
 			players[0].direction = 0;
 		}
 	});	
@@ -84,13 +83,24 @@ function startMappingReleasedKeys() {
 
 function draw() {
 	requestAnimationFrame(draw);
+
+	clearCanvas();
+	updatePlayers();
+	updateBall();
+}
+
+function clearCanvas() {
 	ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-	
+}
+
+function updatePlayers() {
 	for (let i = 0; i < players.length; i++) {
 		players[i].draw();
 		players[i].move();
 	}
-	
+}
+
+function updateBall() {
 	ball.draw();
 	ball.update();
   ball.collisionDetection();
@@ -108,7 +118,6 @@ class Player {
 		this.score = 0;
 		this.scoreElement = document.getElementById(`p${players.length}`);
 	}
-	
 	
 	draw() {
 		ctx.fillStyle = this.color;
