@@ -12,3 +12,26 @@ body {
 canvas {
   background-image: radial-gradient(rgb(0, 45, 66), rgb(0, 7, 11));
 }
+
+.canvas-wrapper {
+  position: relative;
+}
+
+.score-count {
+  display: block;
+  position: absolute;
+  top: 20px;
+  font-size: 48px;
+  font-weight: 700;
+  color: rgb(0, 204, 255);
+  text-shadow: 0px 0px 10px rgb(0, 204, 255);
+  user-select: none;
+}
+
+#p0 {
+  right: 55%;
+}
+
+#p1 {
+  left: 55%;
+}
