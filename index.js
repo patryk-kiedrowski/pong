@@ -4,11 +4,12 @@ const settings = {
 	player: {
 		width: 20,
 		height: 80,
-		color: 'red',
+		color: 'rgb(0, 204, 255)',
 		speed: 6
 	}, 
 	ball: {
-		speed: 7
+		speed: 7,
+		color: 'rgb(0, 204, 255)'
 	}
 };
 
@@ -16,6 +17,7 @@ let players = [];
 let ball;
 
 function setup() {
+	addRoundRectCanvasPrototype();
 	applyCanvasDimensions();
 
 	createBall();
@@ -25,6 +27,21 @@ function setup() {
 	startMappingReleasedKeys();
 
 	draw();
+}
+
+function addRoundRectCanvasPrototype() {
+	CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+		if (w < 2 * r) r = w / 2;
+		if (h < 2 * r) r = h / 2;
+		this.beginPath();
+		this.moveTo(x+r, y);
+		this.arcTo(x+w, y,   x+w, y+h, r);
+		this.arcTo(x+w, y+h, x,   y+h, r);
+		this.arcTo(x,   y+h, x,   y,   r);
+		this.arcTo(x,   y,   x+w, y,   r);
+		this.closePath();
+		return this;
+	}
 }
 
 function applyCanvasDimensions() {
@@ -120,8 +137,11 @@ class Player {
 	}
 	
 	draw() {
+		ctx.shadowColor = this.color;
+		ctx.shadowBlur = 20;
+
 		ctx.fillStyle = this.color;
-		ctx.fillRect(this.x, this.y, this.width, this.height);
+		ctx.roundRect(this.x, this.y, this.width, this.height, 10).fill();
 	}
 	
   move() {
@@ -154,7 +174,7 @@ class Ball {
 	draw() {
 		ctx.beginPath();
 		ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-		ctx.fillStyle = 'white';
+		ctx.fillStyle = settings.ball.color;
 		ctx.fill();
 	}
 	
