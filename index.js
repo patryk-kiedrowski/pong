@@ -5,7 +5,7 @@ const settings = {
 		width: 20,
 		height: 80,
 		color: 'red',
-		speed: 1
+		speed: 7
 	}, 
 	ball: {
 		speed: 5
@@ -19,31 +19,25 @@ let players = [];
 let ball;
 
 document.addEventListener('keydown', (event) => {
-	// console.log(event);
-	if(event.code === 'ArrowDown' && players[1].y < canvas.height - players[1].height) {
-    // players[1].y += players[1].dy;
+	if(event.code === 'ArrowDown') {
     players[1].direction = 1;
 	}
 	
-	if(event.code === 'ArrowUp' && players[1].y > 0) {
-    // players[1].y -= players[1].dy;
+	if(event.code === 'ArrowUp') {
     players[1].direction = -1;
 	}
 	
 	
-	if(event.code === 'KeyS' && players[0].y < canvas.height - players[0].height) {
-    // players[0].y += players[0].dy;
+	if(event.code === 'KeyS') {
     players[0].direction = 1;
 	}
 	
-	if(event.code === 'KeyW' && players[0].y > 0) {
-    // players[0].y -= players[0].dy;
+	if(event.code === 'KeyW') {
     players[0].direction = -1;
   }
 }, true);
 
 document.addEventListener('keyup', (event) => {
-  console.log(event);
 
   if(event.code === 'ArrowDown' || event.code === 'ArrowUp') {
     players[1].direction = 0;
@@ -76,18 +70,18 @@ function draw() {
 	
 	for (let i = 0; i < 2; i++) {
 		players[i].draw();
+		players[i].move();
 	}
 	
 	ball.draw();
 	ball.update();
   ball.collisionDetection();
-  // console.log(players[0].direction, players[1].direction);
 }
 
 function Player() {
 	this.x = 50;
 	this.y = canvas.height / 2;
-	this.dy = 10;
+	this.dy = settings.player.speed;
 	this.width = settings.player.width;
 	this.height = settings.player.height;
 	this.color = settings.player.color;
@@ -100,11 +94,19 @@ function Player() {
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 	
-	// this.move = function() {
-	// 	this.y += dy;
-  // }
   this.move = function() {
-    console.log(this.dy * this.direction);
+		if (this.direction === 1) {
+			if (!(this.y < canvas.height - players[0].height)) {
+				return;
+			}
+		}
+
+		if (this.direction === -1) {
+			if (!(this.y > 0)) {
+				return;
+			}
+		}
+
     this.y += this.dy * this.direction;
   }
   
@@ -126,7 +128,8 @@ function Ball() {
 	
 	this.update = function() {
 		this.x += this.dx;
-    this.y += this.dy;
+		this.y += this.dy;
+		this.magnitude = Math.sqrt(Math.pow(this.dx, 2) + Math.pow(this.dy, 2));
     
     if (this.x + this.radius > canvas.width) {
       this.resetBall();
@@ -148,15 +151,11 @@ function Ball() {
 		if (this.x + this.radius == players[1].x && this.y >= players[1].y && this.y <= players[1].y + settings.player.height) {
 			this.dx = -this.dx;
       this.dy = -newBallDYBasedonOnHitPosition(this.y, players[1].y);
-      
-			console.log(this.y, players[1].y);
 		}
 		
 		if (this.x - this.radius == players[0].x + players[0].width && this.y >= players[0].y && this.y <= players[0].y + settings.player.height) {
 			this.dx = -this.dx;
       this.dy = -newBallDYBasedonOnHitPosition(this.y, players[0].y);
-      
-			console.log(this.y, players[0].y);
 		}
   }
   
@@ -184,8 +183,6 @@ function Ball() {
 function newBallDYBasedonOnHitPosition(ballY, playerY) {
   const playerHeight = settings.player.height;
   const hitYPositionFromCenter = (playerHeight / 2) - ballY + playerY;
-
-  console.log(hitYPositionFromCenter / (playerHeight / 2));
 
   return hitYPositionFromCenter / (playerHeight / 2);
 }
